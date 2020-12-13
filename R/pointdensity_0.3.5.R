@@ -15,7 +15,7 @@
 NULL
 #' Houston crime dataset
 #' 
-#' Lightly cleaned Houston crime; no NA events included and all dates recognized by \code{pointdensity}; data from January 2010 to August 2010 geocoded with Google Maps and courtesy of \pkg{ggmap}
+#' Lightly cleaned Houston crime; no NA events included and all dates recognized by `pointdensity`; data from January 2010 to August 2010 geocoded with Google Maps and courtesy of \pkg{ggmap}
 #' @docType data
 #' @keywords datasets
 #' @name clean_crime
@@ -26,31 +26,31 @@ NULL
 #' 
 #' This function maps a dataset of geospatial points to a regular grid and calculates the density and temporal average of the points.  
 #'
-#' \code{pointdensity} returns a density count and the temporal average for every point in the original list.  The dataframe returned includes four columns:  lat, lon, count, and date_avg.  The "lat" column is the original latitude data; the "lon" column is the original longitude data; the "count" is the density count of the number of points within a defined radius (the neighborhood); and the date_avg column includes the average date of each point in the neighborhood.  Designed specifically for geospatial point processes and originally developed for military applications, this technique applies to any geospatial point process where there is a desire for an explainable measurement of density and maintaining fidelity of the original point locations.  Typical spatial density plotting algorithms, such as kernel density estimation, implement some type of smoothing function that often results in a density value that is difficult to interpret.  \code{pointdensity} was designed for ease of interpretation.  Potential applications include analysis of military events,  crime, and real estate transactions.  An example follows with the Arigon data using \pkg{ggmap} (recommended) for visualization: \cr\cr
-#' \code{Arigon_density <- pointdensity(df = Arigon, lat_col = "latitude", lon_col = "longitude",} \cr
-#' \code{date_col = "date", grid_size = 1, radius = 2)} \cr
-#' \code{map_base <- qmap(location="44.12,-120.83", zoom = 7, darken=0.3)} \cr
-#' \code{map_base + geom_point(aes(x = lon, y = lat, colour = count), shape = 16, size = 2,} \cr
-#' \code{data = Arigon_density) + scale_colour_gradient(low = "green", high = "red")} \cr\cr
+#' `pointdensity` returns a density count and the temporal average for every point in the original list.  The dataframe returned includes four columns:  lat, lon, count, and date_avg.  The "lat" column is the original latitude data; the "lon" column is the original longitude data; the "count" is the density count of the number of points within a defined radius (the neighborhood); and the date_avg column includes the average date of each point in the neighborhood.  Designed specifically for geospatial point processes and originally developed for military applications, this technique applies to any geospatial point process where there is a desire for an explainable measurement of density and maintaining fidelity of the original point locations.  Typical spatial density plotting algorithms, such as kernel density estimation, implement some type of smoothing function that often results in a density value that is difficult to interpret.  `pointdensity` was designed for ease of interpretation.  Potential applications include analysis of military events,  crime, and real estate transactions.  An example follows with the Arigon data using \pkg{ggmap} (recommended) for visualization: \cr\cr
+#' `Arigon_density <- pointdensity(df = Arigon, lat_col = "latitude", lon_col = "longitude",` \cr
+#' `date_col = "date", grid_size = 1, radius = 2)` \cr
+#' `map_base <- qmap(location="44.12,-120.83", zoom = 7, darken=0.3)` \cr
+#' `map_base + geom_point(aes(x = lon, y = lat, colour = count), shape = 16, size = 2,` \cr
+#' `data = Arigon_density) + scale_colour_gradient(low = "green", high = "red")` \cr\cr
 #'
 #' Here is another example using the crime dataset from \pkg{ggmap}:\cr\cr
-#' \code{H_crime <- pointdensity(df = clean_crime, lat_col = "lat", lon_col = "lon",} \cr
-#' \code{grid_size = 1, radius = 4)}\cr
-#' \code{map_base <- qmap(location="29.76,-95.42", zoom = 11, darken=0.3)}\cr
-#' \code{map_base + geom_point(aes(x = lon, y = lat, colour = count), shape = 16, size = 2,} \cr 
-#' \code{data = H_crime) + scale_colour_gradient(low = "green", high = "red")}
+#' `H_crime <- pointdensity(df = clean_crime, lat_col = "lat", lon_col = "lon",` \cr
+#' `grid_size = 1, radius = 4)`\cr
+#' `map_base <- qmap(location="29.76,-95.42", zoom = 11, darken=0.3)`\cr
+#' `map_base + geom_point(aes(x = lon, y = lat, colour = count), shape = 16, size = 2,` \cr 
+#' `data = H_crime) + scale_colour_gradient(low = "green", high = "red")`
 #'
 #' @param df Data frame minimally containing latitude and longitude of spatial point data
-#' @param lat_col name of column in \code{df} that contains latitude or vertical dimension of data
-#' @param lon_col name of column in \code{df} that contains longitude or horizontal dimension of data
-#' @param date_col name of column in \code{df} that contains date associated with the event
+#' @param lat_col name of column in `df` that contains latitude or vertical dimension of data
+#' @param lon_col name of column in `df` that contains longitude or horizontal dimension of data
+#' @param date_col name of column in `df` that contains date associated with the event
 #' @param grid_size distance in kilometers between the grid lines that will support discretization of data and density reference
 #' @param radius distance in kilometers that represents the local neighborhood where an event adds density 
 #' @keywords spatial density
 #' @import data.table
 #' @export
-#' @author Paul Evangelista \email{paul.evangelista@@usma.edu}
-#' @author David Beskow \email{david.beskow@@usma.edu}
+#' @author Paul Evangelista \email{paul.evangelista@@westpoint.edu}
+#' @author David Beskow \email{david.beskow@@westpoint.edu}
 #' @references Wand, M. P. (1994). Fast Computation of Multivariate Kernel Estimators. \emph{Journal of Computational and Graphical Statistics}, 3, 433-445.
 #' @examples 
 #' Arigon_test <- Arigon[1:1000,]
@@ -112,14 +112,14 @@ pointdensity <- function(df, lat_col, lon_col, date_col = NULL, grid_size, radiu
   radius <- rad_steps  			## assign to original variable
   
   #round all latitude data to nearest grid
-  lat_data <- df[,lat_col]
+  lat_data <- unlist(df[,lat_col])
   lat <- lat_data * (1/grid_size)
   lat <- round(lat, 0)
   lat <- lat * (grid_size)
   lat <- round(lat,3)
   
   #round all longitude data to nearest grid
-  lon_data <- df[,lon_col]
+  lon_data <- unlist(df[,lon_col])
   lon <- lon_data * (1/grid_size)
   lon <- round(lon, 0)
   lon <- lon * (grid_size)
@@ -149,7 +149,7 @@ pointdensity <- function(df, lat_col, lon_col, date_col = NULL, grid_size, radiu
   total_measures <- length(yy$lat_c)*(2*radius +1)*(2*radius +1)
   cat("There are ", length(yy$lat_c)," unique grids that require ", total_measures, " measurements...\n\n")
   
-  pb <- txtProgressBar(title="point density calculation progress", label="0% done", min=0, max=100, initial=0, style = 3)
+  pb <- utils::txtProgressBar(title="point density calculation progress", label="0% done", min=0, max=100, initial=0, style = 3)
   
   inventory.mat <- matrix(nrow = 1E6, ncol = 4)	
   inventory = 0
@@ -162,7 +162,7 @@ pointdensity <- function(df, lat_col, lon_col, date_col = NULL, grid_size, radiu
     temp_inventory <- temp_inventory +1
     if(temp_inventory == 100){
       info <- sprintf("%d%% done", round((i/length(yy$lat_c))*100)) 
-      setTxtProgressBar(pb, i/(length(yy$lat_c))*100, label=info)
+      utils::setTxtProgressBar(pb, i/(length(yy$lat_c))*100, label=info)
       temp_inventory = 0
     }
     if(inventory > 1E6){
